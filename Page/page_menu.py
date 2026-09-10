@@ -1,7 +1,9 @@
+import logging
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.webdriver.common.keys import Keys
 import time
 import json
 import os
@@ -21,13 +23,13 @@ class MenuPage:
             WebDriverWait(self.driver, timeout).until(
                 EC.frame_to_be_available_and_switch_to_it(frame_name)
             )
-            print(f"[OK] Cambiado al frame '{frame_name}'")
+            logging.info(f"[OK] Cambiado al frame '{frame_name}'")
             return True
         except TimeoutException:
-            print(f"[ERROR] Timeout esperando el frame '{frame_name}'")
+            logging.info(f"[ERROR] Timeout esperando el frame '{frame_name}'")
             return False
         except Exception as e:
-            print(f"[ERROR] Error al cambiar al frame '{frame_name}': {e}")
+            logging.info(f"[ERROR] Error al cambiar al frame '{frame_name}': {e}")
             return False
 
     def esperar_pagina_lista(self, timeout=20):
@@ -48,7 +50,7 @@ class MenuPage:
             WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "#accordion, .siman-menu-header, .siman-menu-contenido-link"))
             )
-            print("[OK] No se usa frame para el menú; contenido principal detectado.")
+            logging.info("[OK] No se usa frame para el menú; contenido principal detectado.")
             return True
         except Exception:
             return False
@@ -63,7 +65,7 @@ class MenuPage:
                     EC.frame_to_be_available_and_switch_to_it(index)
                 )
                 if self._find_menu_in_default_content(timeout=2):
-                    print(f"[OK] Menú detectado dentro del frame índice {index}.")
+                    logging.info(f"[OK] Menú detectado dentro del frame índice {index}.")
                     return True
             except Exception:
                 continue
@@ -79,7 +81,7 @@ class MenuPage:
             return True
 
         # Fallback: try by index (second frame, index 1)
-        print("[WARNING] Frame 'menu' no encontrado por nombre; intentando fallback por índice.")
+        logging.info("[WARNING] Frame 'menu' no encontrado por nombre; intentando fallback por índice.")
         if self._wait_for_frame(1, timeout=30):
             return True
 
@@ -88,11 +90,11 @@ class MenuPage:
             return True
 
         # Fallback a cualquier frame disponible que pueda contener el menú
-        print("[WARNING] No se encontró el menú en contenido principal; buscando en frames adicionales.")
+        logging.info("[WARNING] No se encontró el menú en contenido principal; buscando en frames adicionales.")
         if self._find_menu_in_frames(timeout=10):
             return True
 
-        print("[ERROR] No se pudo acceder al menú en ningún frame ni en el contenido principal.")
+        logging.info("[ERROR] No se pudo acceder al menú en ningún frame ni en el contenido principal.")
         return False
 
     def hacer_click_en_summer(self):
@@ -103,19 +105,19 @@ class MenuPage:
             )
             boton = self.driver.find_element(*self.boton_summer)
             boton.click()
-            print("[OK] Click en 'SUMMER' realizado")
+            logging.info("[OK] Click en 'SUMMER' realizado")
             # Minimal pause to allow UI update
             time.sleep(1)
             return True
         except TimeoutException:
-            print("[ERROR] Tiempo de espera agotado. No se encontró el botón 'SUMMER'.")
+            logging.info("[ERROR] Tiempo de espera agotado. No se encontró el botón 'SUMMER'.")
             return False
         except NoSuchElementException as e:
-            print("[ERROR] No se encontró el botón 'SUMMER'.")
-            print(e)
+            logging.info("[ERROR] No se encontró el botón 'SUMMER'.")
+            logging.info(e)
             return False
         except Exception as e:
-            print(f"[ERROR] Error inesperado al hacer clic en 'SUMMER': {e}")
+            logging.info(f"[ERROR] Error inesperado al hacer clic en 'SUMMER': {e}")
             return False
 
 
@@ -127,19 +129,19 @@ class MenuPage:
             )
             boton_oceano = self.driver.find_element(By.ID, "Titulo3Opcion10")
             boton_oceano.click()
-            print("[OK] Click en 'OCEANO' realizado")
+            logging.info("[OK] Click en 'OCEANO' realizado")
             # Short pause to allow UI update
             time.sleep(1)
             return True
         except TimeoutException:
-            print("[ERROR] Tiempo de espera agotado. No se encontró el botón 'OCEANO'.")
+            logging.info("[ERROR] Tiempo de espera agotado. No se encontró el botón 'OCEANO'.")
             return False
         except NoSuchElementException as e:
-            print("[ERROR] No se encontró el botón 'OCEANO'.")
-            print(e)
+            logging.info("[ERROR] No se encontró el botón 'OCEANO'.")
+            logging.info(e)
             return False
         except Exception as e:
-            print(f"[ERROR] Error inesperado al hacer clic en 'OCEANO': {e}")
+            logging.info(f"[ERROR] Error inesperado al hacer clic en 'OCEANO': {e}")
             return False
         
     def click_SOL(self):
@@ -150,19 +152,19 @@ class MenuPage:
             )
             boton_sol = self.driver.find_element(By.ID, "Titulo3Opcion9")
             boton_sol.click()
-            print("[OK] Click en 'SOL' realizado")
+            logging.info("[OK] Click en 'SOL' realizado")
             # Short pause to allow UI update
             time.sleep(1)
             return True
         except TimeoutException:
-            print("[ERROR] Tiempo de espera agotado. No se encontró el botón 'SOL'.")
+            logging.info("[ERROR] Tiempo de espera agotado. No se encontró el botón 'SOL'.")
             return False
         except NoSuchElementException as e:
-            print("[ERROR] No se encontró el botón 'SOL'.")
-            print(e)
+            logging.info("[ERROR] No se encontró el botón 'SOL'.")
+            logging.info(e)
             return False
         except Exception as e:
-            print(f"[ERROR] Error inesperado al hacer clic en 'SOL': {e}")
+            logging.info(f"[ERROR] Error inesperado al hacer clic en 'SOL': {e}")
             return False
     
     def click_swim(self):
@@ -173,19 +175,19 @@ class MenuPage:
             )
             boton_terra = self.driver.find_element(By.ID, "Titulo3Opcion7")
             boton_terra.click()
-            print("[OK] Click en 'swim' realizado")
+            logging.info("[OK] Click en 'swim' realizado")
             # Short pause to allow UI update
             time.sleep(1)
             return True
         except TimeoutException:
-            print("[ERROR] Tiempo de espera agotado. No se encontró el botón 'swim'.")
+            logging.info("[ERROR] Tiempo de espera agotado. No se encontró el botón 'swim'.")
             return False
         except NoSuchElementException as e:
-            print("[ERROR] No se encontró el botón 'swim'.")
-            print(e)
+            logging.info("[ERROR] No se encontró el botón 'swim'.")
+            logging.info(e)
             return False
         except Exception as e:
-            print(f"[ERROR] Error inesperado al hacer clic en 'swim': {e}")
+            logging.info(f"[ERROR] Error inesperado al hacer clic en 'swim': {e}")
             return False
     
     def crear_po_menu(self):
@@ -194,7 +196,7 @@ class MenuPage:
             try:
                 opcion = self.driver.find_element(By.ID, "Titulo1Opcion69")
                 if opcion.is_displayed():
-                    print("[OK] Submenú 'Crear PO' ya se encuentra desplegado.")
+                    logging.info("[OK] Submenú 'Crear PO' ya se encuentra desplegado.")
                     return True
             except Exception:
                 pass
@@ -203,40 +205,48 @@ class MenuPage:
             WebDriverWait(self.driver, 20).until(
                 EC.element_to_be_clickable((By.ID, "Titulo1"))
             ).click()
-            print("[OK] Click en 'Crear PO' realizado")
+            logging.info("[OK] Click en 'Crear PO' realizado")
             time.sleep(1)
             return True
         except TimeoutException:
-            print("[ERROR] Timeout esperando el botón 'Crear PO'.")
+            logging.info("[ERROR] Timeout esperando el botón 'Crear PO'.")
             return False
         except Exception as e:
-            print(f"[ERROR] Error inesperado al hacer clic en 'Crear PO': {e}")
+            logging.info(f"[ERROR] Error inesperado al hacer clic en 'Crear PO': {e}")
             return False
 
     def crear_po(self):
         try:
+            # Esperar a que cualquier capa de carga (blockUI) desaparezca antes de interactuar
+            try:
+                WebDriverWait(self.driver, 60).until(
+                    EC.invisibility_of_element_located((By.CSS_SELECTOR, ".blockUI.blockOverlay"))
+                )
+            except Exception:
+                logging.warning("Advertencia: blockUI overlay sigue presente después de 60s en crear_po")
+                
             # Esperar que el submenú sea clickable (puede estar oculto si el menú no desplegó aún)
             WebDriverWait(self.driver, 20).until(
                 EC.element_to_be_clickable((By.ID, "Titulo1Opcion69"))
             ).click()
-            print("[OK] Click en 'Digitar PO' (Crear PO Venta) realizado")
+            logging.info("[OK] Click en 'Digitar PO' (Crear PO Venta) realizado")
             time.sleep(1)
             return True
         except TimeoutException:
-            print("[ERROR] Timeout esperando el botón 'Digitar PO'. Reintentando desplegar menú...")
+            logging.info("[ERROR] Timeout esperando el botón 'Digitar PO'. Reintentando desplegar menú...")
             try:
                 self.driver.find_element(By.ID, "Titulo1").click()
                 time.sleep(1)
                 WebDriverWait(self.driver, 10).until(
                     EC.element_to_be_clickable((By.ID, "Titulo1Opcion69"))
                 ).click()
-                print("[OK] Click en 'Digitar PO' realizado en el reintento")
+                logging.info("[OK] Click en 'Digitar PO' realizado en el reintento")
                 return True
             except Exception as ex:
-                print(f"[ERROR] No se pudo hacer clic en 'Digitar PO' tras reintento: {ex}")
+                logging.info(f"[ERROR] No se pudo hacer clic en 'Digitar PO' tras reintento: {ex}")
                 return False
         except Exception as e:
-            print(f"[ERROR] Error inesperado al hacer clic en 'Digitar PO': {e}")
+            logging.info(f"[ERROR] Error inesperado al hacer clic en 'Digitar PO': {e}")
             return False
     
     def acceder_frame_trabajo(self):
@@ -250,7 +260,7 @@ class MenuPage:
                 alert = self.driver.switch_to.alert
                 text = alert.text
                 if text:
-                    print(f"⚠️ Alerta pendiente detectada: '{text}'. Aceptando...")
+                    logging.warning(f"Alerta pendiente detectada: '{text}'. Aceptando...")
                     alert.accept()
                 else:
                     break
@@ -272,7 +282,7 @@ class MenuPage:
                 f_src = frame.get_attribute("src") or ""
                 if "impor" in f_id.lower() or "uploadimport" in f_src.lower():
                     self.driver.switch_to.frame(frame)
-                    print(f"✅ Cambiado a iframe de importación en 'trabajo': id='{f_id}'")
+                    logging.info(f"Cambiado a iframe de importación en 'trabajo': id='{f_id}'")
                     return True
         except Exception:
             pass
@@ -293,7 +303,7 @@ class MenuPage:
                         n_src = nested.get_attribute("src") or ""
                         if "impor" in n_id.lower() or "uploadimport" in n_src.lower():
                             self.driver.switch_to.frame(nested)
-                            print(f"✅ Cambiado a iframe de importación anidado en país: id='{n_id}'")
+                            logging.info(f"Cambiado a iframe de importación anidado en país: id='{n_id}'")
                             return True
                 except Exception:
                     continue
@@ -308,7 +318,7 @@ class MenuPage:
             WebDriverWait(self.driver, 5).until(
                 EC.frame_to_be_available_and_switch_to_it(iframe_locator)
             )
-            print("✅ Cambiado a iframe de importación por selector XPath.")
+            logging.info("Cambiado a iframe de importación por selector XPath.")
             return True
         except Exception:
             pass
@@ -351,7 +361,7 @@ class MenuPage:
                                     elem.click()
                                 except Exception:
                                     self.driver.execute_script("arguments[0].click();", elem)
-                                print("✅ Click en 'Continuar' realizado (en iframe de país)")
+                                logging.info("Click en 'Continuar'realizado (en iframe de país)")
                                 return True
                 except Exception:
                     continue
@@ -375,7 +385,7 @@ class MenuPage:
                             elem.click()
                         except Exception:
                             self.driver.execute_script("arguments[0].click();", elem)
-                        print("✅ Click en 'Continuar' realizado (en frame 'trabajo')")
+                        logging.info("Click en 'Continuar'realizado (en frame 'trabajo')")
                         return True
         except Exception:
             pass
@@ -415,7 +425,7 @@ class MenuPage:
                                 elem.click()
                             except Exception:
                                 self.driver.execute_script("arguments[0].click();", elem)
-                            print("✅ Click en 'Importar SKU' realizado exitosamente (en frame 'trabajo')")
+                            logging.info("Click en 'Importar SKU'realizado exitosamente (en frame 'trabajo')")
                             return True
             except Exception:
                 pass
@@ -443,7 +453,7 @@ class MenuPage:
                                         elem.click()
                                     except Exception:
                                         self.driver.execute_script("arguments[0].click();", elem)
-                                    print("✅ Click en 'Importar SKU' realizado exitosamente (en iframe de país)")
+                                    logging.info("Click en 'Importar SKU'realizado exitosamente (en iframe de país)")
                                     return True
                     except Exception:
                         continue
@@ -452,7 +462,7 @@ class MenuPage:
 
             time.sleep(0.5)
 
-        print("❌ No se encontró el botón 'Importar SKU' tras esperar 15 segundos.")
+        logging.error("No se encontró el botón 'Importar SKU'tras esperar 15 segundos.")
         return False
 
     def click_continue_and_import(self, file_path):
@@ -461,7 +471,7 @@ class MenuPage:
             # 1. Click 'Continuar'
             self._descartar_alertas()
             if not self._hacer_click_continuar():
-                print("⚠️ No se encontró explícitamente el botón 'Continuar', intentando avanzar...")
+                logging.warning("No se encontró explícitamente el botón 'Continuar', intentando avanzar...")
 
             # 2. Esperar dinámicamente que finalice el procesamiento de 'Continuar'
             self._descartar_alertas()
@@ -477,7 +487,7 @@ class MenuPage:
                 for btn in ok_btns:
                     if btn.is_displayed():
                         btn.click()
-                        print("✅ Botón de diálogo 'Ok' / 'Aceptar' cliqueado.")
+                        logging.info("Botón de diálogo 'Ok'/ 'Aceptar'cliqueado.")
                         break
             except Exception:
                 pass
@@ -511,7 +521,7 @@ class MenuPage:
                             except Exception:
                                 pass
                             
-                            print(f"📂 Asignando la ruta absoluta física completa al input de archivo: '{full_path}'")
+                            logging.info(f"Asignando la ruta absoluta física completa al input de archivo: '{full_path}'")
                             candidate.send_keys(full_path)
                             
                             # Disparar eventos change/input en el elemento tipo file
@@ -535,12 +545,12 @@ class MenuPage:
                             if val_asignado:
                                 file_input = candidate
                                 ruta_asignada_ok = True
-                                print(f"✅ Confirmación: Ruta completa '{full_path}' cargada en Selenium. (Valor visual retornado por el navegador: '{val_asignado}')")
+                                logging.info(f"Confirmación: Ruta completa '{full_path}'cargada en Selenium. (Valor visual retornado por el navegador: '{val_asignado}')")
                                 break
                             else:
-                                print("⚠️ El valor del input de archivo sigue vacío, reintentando...")
+                                logging.warning("El valor del input de archivo sigue vacío, reintentando...")
                 except Exception as ex_loop:
-                    print(f"⚠️ Error al localizar/asignar archivo, reintentando: {ex_loop}")
+                    logging.warning(f"Error al localizar/asignar archivo, reintentando: {ex_loop}")
                 
                 time.sleep(1)
 
@@ -573,7 +583,7 @@ class MenuPage:
                     }
                     return info.join(' | ');
                 """)
-                print(f"ℹ️ Elementos dentro de uploadImportF1.jsp: {info_dom}")
+                logging.info(f"Elementos dentro de uploadImportF1.jsp: {info_dom}")
             except Exception:
                 pass
 
@@ -600,9 +610,9 @@ class MenuPage:
                     time.sleep(0.3)
                     btn_submit.click()
                     submit_exitoso = True
-                    print("✅ Clic NATIVO de Selenium en el botón Submit realizado exitosamente")
+                    logging.info("Clic NATIVO de Selenium en el botón Submit realizado exitosamente")
             except Exception as ex_nativo:
-                print(f"⚠️ Clic nativo en submit falló ({ex_nativo}), ejecutando submit directo en #uploadForm...")
+                logging.warning(f"Clic nativo en submit falló ({ex_nativo}), ejecutando submit directo en #uploadForm...")
 
             # 2. Invocación explícita del método submit() en #uploadForm para asegurar la transmisión multipart
             try:
@@ -616,13 +626,13 @@ class MenuPage:
                         try { form.submit(); } catch(e){}
                     }
                 """)
-                print("✅ Formulario #uploadForm enviado exitosamente (/OCEANO/importformat1?cmd=upload)")
+                logging.info("Formulario #uploadForm enviado exitosamente (/OCEANO/importformat1?cmd=upload)")
                 submit_exitoso = True
             except Exception as ex_form:
-                print(f"⚠️ Error al invocar submit() en #uploadForm: {ex_form}")
+                logging.warning(f"Error al invocar submit() en #uploadForm: {ex_form}")
 
             # 7. Esperar a que el servidor procese la plantilla de SKUs e inserte los datos en AS400/DB2
-            print("⏳ Esperando que el servidor procese y confirme la carga del archivo Excel...")
+            logging.info("Esperando que el servidor procese y confirme la carga del archivo Excel...")
             end_time = time.time() + 20
             confirmado_servidor = False
             while time.time() < end_time:
@@ -630,14 +640,14 @@ class MenuPage:
                     src = self.driver.page_source
                     if src and src != html_antes_submit and ("Insert" in src or "exito" in src.lower() or "éxito" in src.lower() or "procesad" in src.lower() or "cargad" in src.lower() or "ok" in src.lower()):
                         confirmado_servidor = True
-                        print("ℹ️ Confirmación recibida: El servidor finalizó el procesamiento del Excel.")
+                        logging.info("Confirmación recibida: El servidor finalizó el procesamiento del Excel.")
                         break
                 except Exception:
                     pass
                 time.sleep(1)
 
             if not confirmado_servidor:
-                print("⏳ Esperando tiempo de procesamiento backend adicional para la grabación en DB2/AS400...")
+                logging.info("Esperando tiempo de procesamiento backend adicional para la grabación en DB2/AS400...")
                 time.sleep(6)
 
             # Pausa de visualización previa al cierre
@@ -682,21 +692,21 @@ class MenuPage:
                 """)
 
                 if cerrar_ejecutado:
-                    print("✅ Botón 'Cerrar' cliqueado y pestañas de SKUs actualizadas (cargarTabs)")
+                    logging.info("Botón 'Cerrar'cliqueado y pestañas de SKUs actualizadas (cargarTabs)")
                 else:
-                    print("⚠️ No se detectó botón 'Cerrar', forzando recarga de pestañas con cargarTabs()...")
+                    logging.warning("No se detectó botón 'Cerrar', forzando recarga de pestañas con cargarTabs()...")
                     self.driver.execute_script("if (typeof cargarTabs === 'function') { cargarTabs(); }")
 
-                print("⏳ Esperando que la rejilla de SKUs se renderice en las pestañas del país...")
+                logging.info("Esperando que la rejilla de SKUs se renderice en las pestañas del país...")
                 time.sleep(5)
             except Exception as ex:
-                print(f"⚠️ Excepción al cerrar el diálogo modal: {ex}")
+                logging.warning(f"Excepción al cerrar el diálogo modal: {ex}")
 
             # 9. Volver al contexto principal
             self.driver.switch_to.default_content()
             return True
         except Exception as e:
-            print(f"❌ Error durante el proceso de importación: {e}")
+            logging.error(f"Error durante el proceso de importación: {e}")
             self.driver.switch_to.default_content()
             return False
 
@@ -735,7 +745,7 @@ class MenuPage:
             except Exception:
                 self.driver.execute_script("arguments[0].click();", btn_resumen)
 
-            print("✅ Click en 'Resumen de Orden de Compra' realizado")
+            logging.info("Click en 'Resumen de Orden de Compra'realizado")
 
             # Esperar dinámicamente que se oculte el botón o cargue el resumen
             try:
@@ -749,21 +759,17 @@ class MenuPage:
             self.driver.switch_to.default_content()
             return True
         except Exception as e:
-            print(f"❌ Error al ir a Resumen de Orden de Compra: {e}")
+            logging.error(f"Error al ir a Resumen de Orden de Compra: {e}")
             self._descartar_alertas()
             self.driver.switch_to.default_content()
             return False
 
     def enviar_a_aprobacion(self):
-        """Hace click en el botón 'Enviar a Aprobación' en la página de resumen.
-        Busca el botón por texto o por ID comunes en la aplicación OCEANO.
-        """
+        """Hace click en el botón 'Enviar a Aprobación' en la página de resumen."""
         try:
             self.driver.switch_to.default_content()
             self.driver.switch_to.frame("trabajo")
 
-            # Esperar que el botón de aprobación esté disponible
-            # Intentamos múltiples selectores que suele usar OCEANO
             btn_aprobacion = None
             selectores = [
                 (By.XPATH, "//input[@value='Enviar a Aprobación']"),
@@ -783,15 +789,14 @@ class MenuPage:
                     continue
 
             if btn_aprobacion is None:
-                print("⚠️ No se encontró el botón 'Enviar a Aprobación'. Verifica el selector.")
+                logging.warning("No se encontró el botón 'Enviar a Aprobación' en la pantalla de resumen.")
                 self.driver.switch_to.default_content()
                 return False
 
             btn_aprobacion.click()
-            print("✅ Click en 'Enviar a Aprobación' realizado")
+            logging.info("Click en 'Enviar a Aprobación' (resumen) realizado")
             time.sleep(3)
 
-            # Manejar posible diálogo de confirmación jQuery UI
             try:
                 confirmado = self.driver.execute_script("""
                     var clicked = false;
@@ -805,7 +810,7 @@ class MenuPage:
                     return clicked;
                 """)
                 if confirmado:
-                    print("✅ Confirmación de aprobación aceptada")
+                    logging.info("Confirmación de aprobación aceptada")
                     time.sleep(3)
             except Exception:
                 pass
@@ -813,9 +818,11 @@ class MenuPage:
             self.driver.switch_to.default_content()
             return True
         except Exception as e:
-            print(f"❌ Error al enviar a aprobación: {e}")
+            logging.error(f"Error al enviar a aprobación: {e}")
             self.driver.switch_to.default_content()
             return False
+
+
 
     def obtener_numero_po(self):
         """
@@ -841,7 +848,7 @@ class MenuPage:
                         match = re.search(r'\d{6,}', txt)
                         if match:
                             po_numero = match.group(0)
-                            print(f"📦 Número maestro de PO extraído exitosamente: '{po_numero}'")
+                            logging.info(f"📦 Número maestro de PO extraído exitosamente: '{po_numero}'")
                             return po_numero
         except Exception:
             pass
@@ -864,7 +871,7 @@ class MenuPage:
                                 match = re.search(r'\d{6,}', txt)
                                 if match:
                                     po_numero = match.group(0)
-                                    print(f"📦 Número maestro de PO extraído exitosamente (en sub-frame): '{po_numero}'")
+                                    logging.info(f"📦 Número maestro de PO extraído exitosamente (en sub-frame): '{po_numero}'")
                                     return po_numero
                 except Exception:
                     continue
@@ -879,12 +886,12 @@ class MenuPage:
             match = re.search(r'Número maestro de PO\s*:\s*<b[^>]*>\s*(\d+)\s*</b>', html_content, re.IGNORECASE)
             if match:
                 po_numero = match.group(1)
-                print(f"📦 Número maestro de PO extraído vía Regex: '{po_numero}'")
+                logging.info(f"📦 Número maestro de PO extraído vía Regex: '{po_numero}'")
                 return po_numero
         except Exception:
             pass
 
-        print("⚠️ No se pudo extraer el Número maestro de PO de la pantalla actual.")
+        logging.warning("No se pudo extraer el Número maestro de PO de la pantalla actual.")
         return None
 
     def capturar_dom_de_iframes(self, paso_nombre="captura"):
@@ -899,7 +906,7 @@ class MenuPage:
             main_path = os.path.join(carpeta, f"{paso_nombre}_main.html")
             with open(main_path, "w", encoding="utf-8") as f:
                 f.write(main_dom)
-            print(f"✅ DOM principal guardado en '{main_path}'")
+            logging.info(f"DOM principal guardado en '{main_path}'")
 
             frames = self.driver.find_elements(By.TAG_NAME, "iframe") + self.driver.find_elements(By.TAG_NAME, "frame")
             for idx, frame_elem in enumerate(frames):
@@ -911,7 +918,7 @@ class MenuPage:
                     file_path = os.path.join(carpeta, f"{paso_nombre}_{frame_name}.html")
                     with open(file_path, "w", encoding="utf-8") as f:
                         f.write(sub_dom)
-                    print(f"✅ DOM del frame '{frame_name}' guardado en '{file_path}'")
+                    logging.info(f"DOM del frame '{frame_name}'guardado en '{file_path}'")
 
                     # Revisar sub-iframes dentro de este frame
                     sub_frames = self.driver.find_elements(By.TAG_NAME, "iframe") + self.driver.find_elements(By.TAG_NAME, "frame")
@@ -923,12 +930,12 @@ class MenuPage:
                             nested_path = os.path.join(carpeta, f"{paso_nombre}_{frame_name}_{s_name}.html")
                             with open(nested_path, "w", encoding="utf-8") as f:
                                 f.write(nested_dom)
-                            print(f"✅ DOM del sub-frame '{s_name}' guardado en '{nested_path}'")
+                            logging.info(f"DOM del sub-frame '{s_name}'guardado en '{nested_path}'")
                             self.driver.switch_to.parent_frame()
                         except Exception as e_sub:
-                            print(f"⚠️ No se pudo capturar el sub-frame '{s_name}': {e_sub}")
+                            logging.warning(f"No se pudo capturar el sub-frame '{s_name}': {e_sub}")
                 except Exception as e_frame:
-                    print(f"⚠️ No se pudo capturar el frame '{frame_name}': {e_frame}")
+                    logging.warning(f"No se pudo capturar el frame '{frame_name}': {e_frame}")
 
             self.driver.switch_to.default_content()
 
@@ -938,9 +945,245 @@ class MenuPage:
                 log_path = os.path.join(carpeta, f"{paso_nombre}_logs_consola.json")
                 with open(log_path, "w", encoding="utf-8") as f:
                     json.dump(logs, f, indent=2)
-                print(f"✅ Logs de consola guardados en '{log_path}'")
+                logging.info(f"Logs de consola guardados en '{log_path}'")
             except Exception:
                 pass
 
         except Exception as e:
-            print(f"❌ Error al capturar el árbol DOM: {e}")
+            logging.error(f"Error al capturar el árbol DOM: {e}")
+
+    def autorizar_po_menu(self, po_numero):
+        """
+        Navega al menú de autorización y autoriza la PO.
+        """
+        try:
+            self.acceder_frame_menu()
+            
+            # Desplegar 'ADMINISTRAR PO' (Titulo8)
+            try:
+                opcion71 = self.driver.find_element(By.ID, "Titulo8Opcion71")
+                if not opcion71.is_displayed():
+                    WebDriverWait(self.driver, 10).until(
+                        EC.element_to_be_clickable((By.ID, "Titulo8"))
+                    ).click()
+                    logging.info("Clic en 'ADMINISTRAR PO' (Titulo8) realizado.")
+                    time.sleep(1)
+            except:
+                WebDriverWait(self.driver, 10).until(
+                    EC.element_to_be_clickable((By.ID, "Titulo8"))
+                ).click()
+                logging.info("Clic en 'ADMINISTRAR PO' (Titulo8) realizado.")
+                time.sleep(1)
+
+            btn_autorizar_menu = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.ID, "Titulo8Opcion71"))
+            )
+            btn_autorizar_menu.click()
+            logging.info("Clic en menú 'Autorizar PO' (Titulo8Opcion71) realizado.")
+            time.sleep(2)
+            
+            # Cambiar al frame de trabajo para la búsqueda
+            self.acceder_frame_trabajo()
+            
+            # Buscar la PO
+            input_q = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.NAME, "q"))
+            )
+            input_q.clear()
+            input_q.send_keys(po_numero)
+            time.sleep(0.5)
+            input_q.send_keys(Keys.RETURN)
+            
+            # Contingencia: si no busca con Enter, dar clic al botón de búsqueda de la lupa
+            try:
+                lupa = self.driver.find_element(By.CSS_SELECTOR, ".pSearch.pButton")
+                lupa.click()
+            except:
+                pass
+                
+            logging.info(f"Búsqueda de PO {po_numero} para autorizar enviada.")
+            
+            # Esperar a que la pantalla de carga (si aparece) desaparezca
+            try:
+                WebDriverWait(self.driver, 10).until(
+                    EC.invisibility_of_element_located((By.CSS_SELECTOR, ".blockUI.blockOverlay"))
+                )
+            except:
+                pass
+                
+            time.sleep(1)
+            
+            # Seleccionar el checkbox de la PO, esperando hasta 30 segundos a que renderice
+            checkbox_po = WebDriverWait(self.driver, 30).until(
+                EC.element_to_be_clickable((By.ID, po_numero))
+            )
+            checkbox_po.click()
+            logging.info(f"Checkbox de la PO {po_numero} seleccionado.")
+            
+            # Clic en Aceptar para autorizar con espera explícita
+            btn_aceptar = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.ID, "acceptButton"))
+            )
+            # Asegurarnos de hacer scroll para que no esté oculto
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn_aceptar)
+            time.sleep(1)
+            try:
+                btn_aceptar.click()
+            except:
+                self.driver.execute_script("arguments[0].click();", btn_aceptar)
+            
+            logging.info("Clic en 'Aceptar' (acceptButton) realizado para autorizar (con espera explícita).")
+            
+            # Esperar a que aparezca el diálogo jQuery UI y hacer clic en Cerrar mediante JS
+            try:
+                # Damos un pequeño respiro para que el diálogo termine de renderizar
+                time.sleep(2)
+                cerrado = self.driver.execute_script("""
+                    var clicked = false;
+                    $(".ui-dialog-buttonpane button").each(function() {
+                        var txt = $(this).text().trim();
+                        if (txt === 'Cerrar' || txt === 'Aceptar' || txt === 'OK') {
+                            $(this).trigger('click');
+                            clicked = true;
+                        }
+                    });
+                    return clicked;
+                """)
+                if cerrado:
+                    logging.info("Clic en 'Cerrar' (jQuery UI dialog) realizado con éxito mediante JS.")
+                    
+                    # Esperar explícitamente a que el cuadro de diálogo desaparezca
+                    try:
+                        WebDriverWait(self.driver, 30).until(
+                            EC.invisibility_of_element_located((By.CSS_SELECTOR, ".ui-dialog"))
+                        )
+                        logging.info("El cuadro de diálogo se ha cerrado por completo.")
+                    except:
+                        logging.warning("El cuadro de diálogo tardó demasiado en desaparecer.")
+                        
+                    # Esperar también a la pantalla de carga (blockUI) que se dispara después de autorizar
+                    try:
+                        WebDriverWait(self.driver, 60).until(
+                            EC.invisibility_of_element_located((By.CSS_SELECTOR, ".blockUI.blockOverlay"))
+                        )
+                        logging.info("La capa de carga posterior a la autorización ha desaparecido.")
+                    except:
+                        logging.warning("La capa de carga posterior a la autorización tardó demasiado.")
+                        
+                else:
+                    logging.warning("No se encontró el botón 'Cerrar' mediante JS.")
+                time.sleep(1)
+            except Exception as e:
+                logging.warning(f"No se pudo cerrar la alerta de autorización: {e}")
+            
+            return True
+        except Exception as e:
+            logging.error(f"Error al autorizar la PO {po_numero}: {e}")
+            return False
+
+    def cambiar_estado_po_menu(self):
+        """
+        Navega a la pantalla de cambio de estado.
+        """
+        try:
+            self.acceder_frame_menu()
+            
+            # Desplegar menú 'ADMINISTRAR PO' si es necesario
+            try:
+                opcion66 = self.driver.find_element(By.ID, "Titulo8Opcion66")
+                if not opcion66.is_displayed():
+                    WebDriverWait(self.driver, 10).until(
+                        EC.element_to_be_clickable((By.ID, "Titulo8"))
+                    ).click()
+                    logging.info("Clic en 'ADMINISTRAR PO' (Titulo8) realizado.")
+                    time.sleep(1)
+            except:
+                WebDriverWait(self.driver, 10).until(
+                    EC.element_to_be_clickable((By.ID, "Titulo8"))
+                ).click()
+                logging.info("Clic en 'ADMINISTRAR PO' (Titulo8) realizado.")
+                time.sleep(1)
+
+            btn_cambiar = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.ID, "Titulo8Opcion66"))
+            )
+            btn_cambiar.click()
+            logging.info("Clic en menú 'Cambiar Estado PO' (Titulo8Opcion66) realizado.")
+            time.sleep(2)
+            return True
+        except Exception as e:
+            logging.error(f"Error al navegar a Cambiar Estado PO: {e}")
+            return False
+
+    def buscar_y_cambiar_estado_po(self, po_numero):
+        """
+        Busca la PO por su número, cambia su estado y extrae el RI.
+        Retorna (exito: bool, numero_ri: str|None)
+        """
+        try:
+            self.acceder_frame_trabajo()
+            
+            # 1. Ingresar número de PO
+            po_input = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.ID, "PONumber"))
+            )
+            po_input.clear()
+            po_input.send_keys(po_numero)
+            
+            # 2. Borrar el campo Country
+            country_input = self.driver.find_element(By.ID, "Country")
+            country_input.clear()
+            
+            # 3. Click en Buscar
+            btn_search = self.driver.find_element(By.ID, "botonSearch")
+            btn_search.click()
+            logging.info(f"Búsqueda ejecutada para PO: {po_numero}")
+            
+            # 4. Esperar a que el radio button aparezca y extraer RI del onclick
+            radio_po = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.ID, "masterPONumber"))
+            )
+            
+            onclick_text = radio_po.get_attribute("onclick") or ""
+            numero_ri = None
+            match_ri = re.search(r'pori=(\d+)', onclick_text)
+            if match_ri:
+                numero_ri = match_ri.group(1)
+                logging.info(f"📦 RI extraído del atributo onclick: {numero_ri}")
+            
+            # 5. Seleccionar la PO y hacer clic en Cambiar Estado PO
+            radio_po.click()
+            logging.info("Radio button de la PO seleccionado.")
+            
+            btn_copy = self.driver.find_element(By.ID, "botonCopy")
+            btn_copy.click()
+            logging.info("Clic en 'Cambiar Estado PO' (botonCopy) realizado.")
+            time.sleep(2)
+            
+            # 6. Manejar la alerta/diálogo y hacer clic en 'Cambiar estado de la orden'
+            try:
+                # Podría haber una alerta nativa antes o ser un botón en el DOM
+                try:
+                    alert = self.driver.switch_to.alert
+                    alert.accept()
+                    logging.info("Alerta JS aceptada al cambiar estado.")
+                    time.sleep(1)
+                except:
+                    pass
+                
+                # Clic en el botón final de confirmación
+                btn_change = WebDriverWait(self.driver, 10).until(
+                    EC.element_to_be_clickable((By.ID, "changePOButton"))
+                )
+                btn_change.click()
+                logging.info("Clic en 'Cambiar estado de la orden' (changePOButton) realizado.")
+                time.sleep(2)
+                
+            except Exception as e:
+                logging.warning(f"Advertencia al confirmar el cambio de estado: {e}")
+            
+            return True, numero_ri
+            
+        except Exception as e:
+            logging.error(f"Error en buscar_y_cambiar_estado_po para {po_numero}: {e}")
+            return False, None
